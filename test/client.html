@@ -9,8 +9,7 @@ $(document).ready(function(){
         type: 'POST',
         url: "http://127.0.0.1:8000/data",
         headers: {
-            'Content-Type':'application/json',
-            "Device-Memory": 1
+            'Content-Type':'application/json'
         }
     }).done(function(data) {
         alert(JSON.stringify(data));
