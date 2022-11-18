@@ -1,6 +1,6 @@
-const DataModel = require("../models/data_model")
 const DeviceDetector = require("device-detector-js")
-
+const os = require("os")
+const DataModel = require("../models/data_model")
 
 class DataService {
     constructor() {
@@ -10,17 +10,17 @@ class DataService {
     async createData(req, res) {
         try {
             const clientDetail = this.deviceDetector.parse(req.header("user-agent"))
-            let [remainingRamValue, totalRamValue] = [0, 0]
+            let [remainingRamValue, totalRamValue] = [os.freemem(), os.totalmem()]
             if (req.header("device-memory")) {
                 remainingRamValue = Number(req.header("device-memory"))
                 totalRamValue = Number(req.header("device-memory"))
             }
 
             const newData = {
-                cpuname: clientDetail.device.model,
-                type: clientDetail.os.name,
-                platform: clientDetail.os.platform,
-                release: clientDetail.os.version,
+                cpuname: clientDetail.device.model || os.cpus()[0].model,
+                type: clientDetail.os.name || os.version(),
+                platform: clientDetail.os.platform || os.platform(),
+                release: clientDetail.os.version || os.release(),
                 remainingRam: remainingRamValue,
                 totalRam: totalRamValue
             }
