@@ -16,11 +16,23 @@ class DataService {
                 totalRamValue = Number(req.header("device-memory"))
             }
 
+            if (clientDetail.device == null) {
+                clientDetail.device = {}
+                clientDetail.device.model = ""
+            }
+
+            if (clientDetail.os == null) {
+                clientDetail.os = {}
+                clientDetail.os.name = ""
+                clientDetail.os.platform = ""
+                clientDetail.os.release = ""
+            }
+
             const newData = {
                 cpuname: clientDetail.device.model || os.cpus()[0].model,
-                type: clientDetail.os.name || os.version(),
-                platform: clientDetail.os.platform || os.platform(),
-                release: clientDetail.os.version || os.release(),
+                type:  clientDetail.os.name || os.type(),
+                platform:  clientDetail.os.platform || os.platform(),
+                release:  clientDetail.os.version || os.version(),
                 remainingRam: remainingRamValue,
                 totalRam: totalRamValue
             }
@@ -29,7 +41,7 @@ class DataService {
             
             return response
         } catch (error) {
-            throw res.status(500)
+            res.status(500).send(error)
         }
     }
 
@@ -38,7 +50,7 @@ class DataService {
             const data = await DataModel.find()
             return data
         } catch (error) {
-            throw res.status(500)
+            res.status(500).send(error)
         }
     }
 }
